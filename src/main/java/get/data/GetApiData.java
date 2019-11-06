@@ -15,6 +15,7 @@ import org.apache.http.util.EntityUtils;
 import rows.AllDataRow;
 
 public class GetApiData {
+	
 	private HashMap<String, AllDataRow> allDataMap;
 	private String link;
 
