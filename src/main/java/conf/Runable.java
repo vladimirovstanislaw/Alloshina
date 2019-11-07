@@ -2,9 +2,13 @@ package conf;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,8 +30,8 @@ public class Runable {
 			String rootDirectory = args[0]; // Куда кладем .csv - выгрузку и номеклатуру
 			String fileNameUpload = args[1]; // имя отправляемого файла
 			String linkToData = args[2]; // ссылка на данные Аллошины
-			String rawDataFile="Raw.csv";
-			
+			String rawDataFile = "Raw.csv";
+
 			logFile = new File(rootDirectory + "\\log.txt");
 
 			HashMap<String, AllDataRow> allDataMap = new HashMap<>();
@@ -40,25 +44,26 @@ public class Runable {
 				throw new Exception("Old data from 1C");
 			}
 
-			// записываем данные в файл
+			File rawFile = new File(rootDirectory + "\\" + rawDataFile);
+
+//			 записываем данные в файл
 			BufferedWriter writer = new BufferedWriter(new FileWriter(rootDirectory + "\\" + rawDataFile));
 			writer.write(rawData);
 			writer.close();
 
 			// парсим данные
-			File rawFile = new File(rootDirectory + "\\" + rawDataFile);
-
 			RawDataParser parser = RawDataParser.getInstance();
 
 			parser.setAllDataMap(allDataMap);
 			parser.setFilenameFrom(rootDirectory + "\\" + rawDataFile);
 
-			allDataMap = parser.Parse();
+			allDataMap = parser.plainParse();
 
 			allDataMap.forEach((k, v) -> {
 				System.out.println("Id= \"" + v.getId() + "\" Name=\"" + v.getName() + "\" Leftovers=\""
 						+ v.getLeftOvers() + "\" Price=\"" + v.getPrice() + "\"");
 			});
+			System.out.println("The number of RawData rows = " + allDataMap.size());
 
 		}
 

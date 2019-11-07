@@ -1,5 +1,7 @@
 package parsers;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -43,52 +45,57 @@ public class RawDataParser {
 		this.allDataMap = allDataMap;
 	}
 
-	public HashMap<String, AllDataRow> Parse() throws IOException {
+	public HashMap<String, AllDataRow> plainParse() throws IOException {
+
+		BufferedReader csvReader = new BufferedReader(new FileReader(filenameFrom));
+		String row;
 		int count = 0;
-		try (Reader reader = Files.newBufferedReader(Paths.get(filenameFrom));
-				CSVParser csvParser = new CSVParser(reader,
-						CSVFormat.EXCEL.withDelimiter(';').withFirstRecordAsHeader());) {
-			for (CSVRecord csvRecord : csvParser) {
 
-				// Accessing Values by Column Index
-				String id = csvRecord.get(0); // это код производителя
-				String name = csvRecord.get(1);
-				String leftOver = csvRecord.get(2);
-				String priceString = csvRecord.get(3);
+		while ((row = csvReader.readLine()) != null) {
+			String[] data = row.split(";");
+			System.out.println("Id= \"" + data[0] + "\" Name=\"" + data[1] + "\" Leftovers=\"" + data[2]
+					+ "\" PriceS=\"" + data[3] + "\"");
+			String id = data[0]; // это код производителя
+			String name = data[1];
+			String leftOver = data[2];
+			String priceString = data[3];
+			int price;
 
-				int price;
-
-				if (isNullString(id)) {
-					continue;
-				}
-				if (isNullString(leftOver)) {
-					continue;
-				}
-				if (isNullString(priceString)) {
-					continue;
-				}
-				if (isNullString(name)) {
-					continue;
-				}
-				if (leftOver.contains(" ")) {
-					continue;
-				}
-				try {
-					price = Integer.valueOf(priceString);
-				} catch (Exception ex) {
-					System.out.println(ex.getMessage());
-					continue;
-				}
-
-				AllDataRow tmpRow = new AllDataRow();
-				tmpRow.setId(id);
-				tmpRow.setLeftOvers(leftOver);
-				tmpRow.setName(name);
-				tmpRow.setPrice(price);
-				allDataMap.put(id, tmpRow);
-				count++;
+			if (isNullString(id)) {
+				continue;
 			}
+			if (isNullString(leftOver)) {
+				continue;
+			}
+			if (isNullString(priceString)) {
+				continue;
+			}
+			if (isNullString(name)) {
+				continue;
+			}
+			if (leftOver.contains(" ")) {
+				continue;
+			}
+
+			try {
+				price = Integer.valueOf(priceString);
+			} catch (Exception ex) {
+				System.out.println(ex.getMessage());
+				System.out.println("johny");
+				continue;
+			}
+
+			AllDataRow tmpRow = new AllDataRow();
+			tmpRow.setId(id);
+			tmpRow.setLeftOvers(leftOver);
+			tmpRow.setName(name);
+			tmpRow.setPrice(price);
+
+			allDataMap.put(id, tmpRow);
+			count++;
+
 		}
+		csvReader.close();
 		System.out.println("The number of RawData rows = " + count);
 		return allDataMap;
 	}
@@ -113,6 +120,9 @@ public class RawDataParser {
 			return true;
 		}
 		if (string.length() == 0) {
+			return true;
+		}
+		if (string.contains("?")) {
 			return true;
 		}
 		return false;

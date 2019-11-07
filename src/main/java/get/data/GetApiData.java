@@ -38,6 +38,7 @@ public class GetApiData {
 			if (entity != null) {
 				String result = EntityUtils.toString(entity);
 				System.out.println("Result :\n" + result);
+				result=result.substring(50, result.length() - 2);
 				return result;
 			}
 		}
