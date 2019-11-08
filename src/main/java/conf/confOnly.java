@@ -9,7 +9,7 @@ public class confOnly {
 
 	 cd C:/Users/svladimirov/eclipse-workspace/Alloshina	  
 	 git add .
-	 git commit -m  " "
+	 git commit -m  "All data is parsable"
 	 git push -u origin master
 
 

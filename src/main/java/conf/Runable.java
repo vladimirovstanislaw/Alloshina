@@ -2,22 +2,19 @@ package conf;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.apache.http.client.ClientProtocolException;
-
+import configureFiles.Nomenclature;
+import configureFiles.Upload;
 import get.data.GetApiData;
 import parsers.RawDataParser;
 import rows.AllDataRow;
+import sendData.Sender;
 
 public class Runable {
 
@@ -37,6 +34,8 @@ public class Runable {
 			HashMap<String, AllDataRow> allDataMap = new HashMap<>();
 
 			// достаем данные из api
+
+			System.out.println("Get data from API..");
 			GetApiData getData = new GetApiData(allDataMap, linkToData);
 			String rawData = getData.getData();
 			if (rawData == null) {
@@ -51,6 +50,7 @@ public class Runable {
 			writer.write(rawData);
 			writer.close();
 
+			System.out.println("Parsing..");
 			// парсим данные
 			RawDataParser parser = RawDataParser.getInstance();
 
@@ -59,11 +59,27 @@ public class Runable {
 
 			allDataMap = parser.plainParse();
 
-			allDataMap.forEach((k, v) -> {
-				System.out.println("Id= \"" + v.getId() + "\" Name=\"" + v.getName() + "\" Leftovers=\""
-						+ v.getLeftOvers() + "\" Price=\"" + v.getPrice() + "\"");
-			});
-			System.out.println("The number of RawData rows = " + allDataMap.size());
+			System.out.println("Creating nomenclture file..");
+			// создаем файл номеклатуры
+			Date date = new Date();
+
+			String nomenclatureFileName = rootDirectory + "\\Nomenclature_" + date.getDate() + "_" + date.getMonth()
+					+ "_" + (date.getYear() + 1900) + ".csv";
+			Nomenclature nom = new Nomenclature(allDataMap, nomenclatureFileName);
+			nom.writeFile();
+
+			System.out.println("Configure final data file..");
+			// созадаём файл данных, кт далее будем отправлять на наш sftp
+
+			Upload up = new Upload(allDataMap, (rootDirectory + "\\" + fileNameUpload));
+			up.writeFile();
+
+			System.out.println("Sending data..");
+			// отправляем данные
+			Sender sender = new Sender();
+			sender.setData(rootDirectory, fileNameUpload);
+			sender.send();
+			System.out.println("Done. \u203E\\( \u25CF , \u25CF)/\u203E");
 
 		}
 

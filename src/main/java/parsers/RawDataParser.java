@@ -3,14 +3,7 @@ package parsers;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
-
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 
 import rows.AllDataRow;
 
@@ -53,8 +46,7 @@ public class RawDataParser {
 
 		while ((row = csvReader.readLine()) != null) {
 			String[] data = row.split(";");
-			System.out.println("Id= \"" + data[0] + "\" Name=\"" + data[1] + "\" Leftovers=\"" + data[2]
-					+ "\" PriceS=\"" + data[3] + "\"");
+
 			String id = data[0]; // это код производителя
 			String name = data[1];
 			String leftOver = data[2];
@@ -81,7 +73,6 @@ public class RawDataParser {
 				price = Integer.valueOf(priceString);
 			} catch (Exception ex) {
 				System.out.println(ex.getMessage());
-				System.out.println("johny");
 				continue;
 			}
 

@@ -15,7 +15,7 @@ import org.apache.http.util.EntityUtils;
 import rows.AllDataRow;
 
 public class GetApiData {
-	
+
 	private HashMap<String, AllDataRow> allDataMap;
 	private String link;
 
@@ -37,8 +37,7 @@ public class GetApiData {
 			System.out.println("Content-type: " + headers);
 			if (entity != null) {
 				String result = EntityUtils.toString(entity);
-				System.out.println("Result :\n" + result);
-				result=result.substring(50, result.length() - 2);
+				result = result.substring(50, result.length() - 2);
 				return result;
 			}
 		}
