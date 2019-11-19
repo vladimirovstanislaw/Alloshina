@@ -56,7 +56,7 @@ public class Upload {
 		if (allDataMap != null) {
 
 			allDataMap.forEach((k, v) -> finalData += k + semilicon + semilicon + semilicon + semilicon + v.getPrice()
-					+ semilicon + v.getLeftOvers() + n);
+					+ semilicon + v.getLeftOvers() + semilicon + daysToDelivery + n);
 			FileOutputStream outputStream = new FileOutputStream(fileName);
 
 			byte[] strToBytes = finalData.getBytes();
