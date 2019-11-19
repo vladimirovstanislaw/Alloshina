@@ -27,6 +27,7 @@ public class Runable {
 			String rootDirectory = args[0]; // Куда кладем .csv - выгрузку и номеклатуру
 			String fileNameUpload = args[1]; // имя отправляемого файла
 			String linkToData = args[2]; // ссылка на данные Аллошины
+			String daysToDelivery = args[3];
 			String rawDataFile = "Raw.csv";
 
 			logFile = new File(rootDirectory + "\\log.txt");
@@ -63,15 +64,14 @@ public class Runable {
 			// создаем файл номеклатуры
 			Date date = new Date();
 
-			String nomenclatureFileName = rootDirectory + "\\Nomenclature_" + date.getDate() + "_" + date.getMonth()
-					+ "_" + (date.getYear() + 1900) + ".csv";
+			String nomenclatureFileName = rootDirectory + "\\Nomenclature.csv";
 			Nomenclature nom = new Nomenclature(allDataMap, nomenclatureFileName);
 			nom.writeFile();
 
 			System.out.println("Configure final data file..");
 			// созадаём файл данных, кт далее будем отправлять на наш sftp
 
-			Upload up = new Upload(allDataMap, (rootDirectory + "\\" + fileNameUpload));
+			Upload up = new Upload(allDataMap, (rootDirectory + "\\" + fileNameUpload), daysToDelivery);
 			up.writeFile();
 
 			System.out.println("Sending data..");

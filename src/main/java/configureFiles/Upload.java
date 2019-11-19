@@ -15,15 +15,17 @@ public class Upload {
 	private static final String semilicon = ";";
 	private static final String replaceWith = "";
 	private final Pattern p = Pattern.compile("( )*$");
+	private String daysToDelivery;
 
 	public Upload() {
 		super();
 	}
 
-	public Upload(HashMap<String, AllDataRow> allDataMap, String fileName) {
+	public Upload(HashMap<String, AllDataRow> allDataMap, String fileName, String days) {
 		super();
 		this.allDataMap = allDataMap;
 		this.fileName = fileName;
+		this.daysToDelivery = days;
 	}
 
 	public HashMap<String, AllDataRow> getAllDataMap() {
@@ -53,7 +55,8 @@ public class Upload {
 	public void writeFile() throws IOException {
 		if (allDataMap != null) {
 
-			allDataMap.forEach((k, v) -> finalData += k + semilicon + v.getPrice() + semilicon + v.getLeftOvers() + n);
+			allDataMap.forEach((k, v) -> finalData += k + semilicon + semilicon + semilicon + semilicon + v.getPrice()
+					+ semilicon + v.getLeftOvers() + n);
 			FileOutputStream outputStream = new FileOutputStream(fileName);
 
 			byte[] strToBytes = finalData.getBytes();

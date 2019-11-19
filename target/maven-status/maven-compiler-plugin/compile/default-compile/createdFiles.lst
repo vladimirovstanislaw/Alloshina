@@ -1,0 +1,9 @@
+configureFiles\Upload.class
+get\data\GetApiData.class
+configureFiles\Nomenclature.class
+rows\NomenclatureRow.class
+conf\confOnly.class
+sendData\Sender.class
+parsers\RawDataParser.class
+rows\AllDataRow.class
+conf\Runable.class
